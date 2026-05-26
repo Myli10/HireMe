@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.FavoriteJobsView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:FirebaseWorkout.ViewModels"
+    xmlns:model="clr-namespace:FirebaseWorkout.Model"
+    x:DataType="vm:FavoriteJobsViewModel"
+    Title="Favorite Jobs"
+    BackgroundColor="White">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+
+        <!--  Header  -->
+        <VerticalStackLayout Grid.Row="0" Spacing="10" Margin="0,10,0,16">
+            <Label
+                Text="Favorite Jobs"
+                FontSize="26"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                TextColor="#512BD4" />
+
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#512BD4"
+                HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!--  Favorites List  -->
+        <CollectionView
+            Grid.Row="1"
+            ItemsSource="{Binding FavoriteJobs}">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                    <Label
+                        Text="No favorites yet"
+                        FontSize="18"
+                        TextColor="Gray"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="Go find a job and add it to favorites!"
+                        FontSize="14"
+                        TextColor="Gray"
+                        HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:FavoriteWorkPlaceItem">
+                    <Border
+                        Margin="0,6"
+                        Padding="16,14"
+                        Stroke="#E0E0E0"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="1"
+                        BackgroundColor="White">
+                        <Border.Shadow>
+                            <Shadow Brush="Gray" Offset="0,2" Radius="4" Opacity="0.12" />
+                        </Border.Shadow>
+
+                        <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="4">
+                                <Label
+                                    Text="{Binding WorkPlace.Name}"
+                                    FontSize="17"
+                                    FontAttributes="Bold"
+                                    TextColor="#1A1A2E" />
+                                <Label
+                                    Text="{Binding WorkPlace.Address}"
+                                    FontSize="13"
+                                    TextColor="Gray" />
+                            </VerticalStackLayout>
+
+                            <Switch
+                                Grid.Column="1"
+                                IsToggled="{Binding IsFavorite}"
+                                OnColor="#512BD4"
+                                ThumbColor="White"
+                                VerticalOptions="Center"
+                                Toggled="OnFavoriteToggled" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!--  Back Button  -->
+        <Button
+            Grid.Row="2"
+            Text="Back To Find Job"
+            Command="{Binding BackToFindJobCommand}"
+            BackgroundColor="#DFD8F7"
+            TextColor="#512BD4"
+            CornerRadius="10"
+            FontSize="16"
+            HeightRequest="50"
+            Margin="0,12,0,10" />
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.ChatView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:FirebaseWorkout.ViewModels"
+    xmlns:model="clr-namespace:FirebaseWorkout.Model"
+    x:DataType="vm:ChatViewModel"
+    Title="{Binding WorkPlaceName}"
+    BackgroundColor="White">
+
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="#F5F5F5">
+
+        <!-- Sub-header: who you're chatting with -->
+        <Border
+            Grid.Row="0"
+            BackgroundColor="#512BD4"
+            Padding="16,8">
+            <Label
+                Text="{Binding OtherUserName, StringFormat='💬 Chat with {0}'}"
+                FontSize="14"
+                TextColor="White"
+                HorizontalOptions="Center" />
+        </Border>
+
+        <!-- Messages List -->
+        <CollectionView
+            x:Name="MessagesView"
+            Grid.Row="1"
+            ItemsSource="{Binding Messages}"
+            Margin="0,8">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="8">
+                    <Label Text="💬" FontSize="48" HorizontalOptions="Center" />
+                    <Label
+                        Text="No messages yet"
+                        FontSize="16"
+                        TextColor="Gray"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="Send the first message!"
+                        FontSize="13"
+                        TextColor="Gray"
+                        HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:ChatMessage">
+                    <VerticalStackLayout Spacing="0">
+
+                        <!-- כותרת תאריך — מופיעה רק מעל ההודעה הראשונה של כל יום -->
+                        <Border
+                            IsVisible="{Binding ShowDateSeparator}"
+                            BackgroundColor="#E8E4F5"
+                            Padding="14,4"
+                            Margin="0,10,0,6"
+                            HorizontalOptions="Center"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="Transparent">
+                            <Label
+                                Text="{Binding DateSeparatorLabel}"
+                                FontSize="12"
+                                TextColor="#512BD4"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Center" />
+                        </Border>
+
+                        <!-- בועות ההודעה -->
+                        <Grid ColumnDefinitions="*,*,*" Padding="12,4">
+
+                            <!-- Their message (left-aligned) -->
+                            <Border
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                IsVisible="{Binding IsMyMessage, Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="White"
+                                Padding="12,8"
+                                Stroke="#E0E0E0"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 16,16,16,4">
+                                <VerticalStackLayout Spacing="3">
+                                    <Label
+                                        Text="{Binding SenderName}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"
+                                        TextColor="#512BD4" />
+                                    <Label
+                                        Text="{Binding Text}"
+                                        FontSize="15"
+                                        TextColor="#1A1A2E" />
+                                    <Label
+                                        Text="{Binding DisplayTime}"
+                                        FontSize="10"
+                                        TextColor="Gray"
+                                        HorizontalOptions="End" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- My message (right-aligned) -->
+                            <Border
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                IsVisible="{Binding IsMyMessage}"
+                                BackgroundColor="#512BD4"
+                                Padding="12,8"
+                                Stroke="Transparent"
+                                StrokeShape="RoundRectangle 16,16,4,16">
+                                <VerticalStackLayout Spacing="3">
+                                    <Label
+                                        Text="{Binding Text}"
+                                        FontSize="15"
+                                        TextColor="White" />
+                                    <Label
+                                        Text="{Binding DisplayTime}"
+                                        FontSize="10"
+                                        TextColor="#CCC"
+                                        HorizontalOptions="End" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                        </Grid>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Input Bar -->
+        <Border
+            Grid.Row="2"
+            BackgroundColor="White"
+            Stroke="#E0E0E0"
+            StrokeThickness="1"
+            Padding="8,10">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                <Button
+                    Grid.Column="0"
+                    Text="←"
+                    Clicked="OnBackClicked"
+                    BackgroundColor="#EEE"
+                    TextColor="#512BD4"
+                    CornerRadius="24"
+                    WidthRequest="48"
+                    HeightRequest="48"
+                    FontSize="20"
+                    Padding="0" />
+                <Border
+                    Grid.Column="1"
+                    Padding="14,10"
+                    Stroke="#E0E0E0"
+                    StrokeShape="RoundRectangle 24">
+                    <Entry
+                        Placeholder="Type a message..."
+                        Text="{Binding MessageText}"
+                        FontSize="15"
+                        ReturnCommand="{Binding SendMessageCommand}"
+                        ReturnType="Send" />
+                </Border>
+                <Button
+                    Grid.Column="2"
+                    Text="➤"
+                    Command="{Binding SendMessageCommand}"
+                    IsEnabled="{Binding IsSending, Converter={StaticResource InvertedBoolConverter}}"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    CornerRadius="24"
+                    WidthRequest="48"
+                    HeightRequest="48"
+                    FontSize="18"
+                    Padding="0" />
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentPage>

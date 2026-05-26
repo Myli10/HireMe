@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.JobMapView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:FirebaseWorkout.ViewModels"
+    x:DataType="vm:JobMapViewModel"
+    Title="Jobs Near You"
+    BackgroundColor="White">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!--  Header  -->
+        <VerticalStackLayout Grid.Row="0" Padding="16,12" Spacing="6">
+            <Label
+                Text="Jobs Near You"
+                FontSize="22"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                TextColor="#512BD4" />
+            <Label
+                Text="Tap a pin to view job details"
+                FontSize="13"
+                TextColor="Gray"
+                HorizontalOptions="Center" />
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#512BD4"
+                HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!--  Map WebView  -->
+        <WebView
+            x:Name="MapWebView"
+            Grid.Row="1"
+            Navigating="OnMapNavigating" />
+
+    </Grid>
+</ContentPage>

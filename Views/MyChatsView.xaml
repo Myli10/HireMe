@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.MyChatsView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:FirebaseWorkout.ViewModels"
+    xmlns:model="clr-namespace:FirebaseWorkout.Model"
+    x:DataType="vm:MyChatsViewModel"
+    Title="My Chats"
+    BackgroundColor="White">
+
+    <Grid RowDefinitions="Auto,*" Padding="20">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="6" Margin="0,10,0,16">
+            <Label
+                Text="My Conversations"
+                FontSize="24"
+                FontAttributes="Bold"
+                TextColor="#512BD4"
+                HorizontalOptions="Center" />
+            <Label
+                Text="Your chats with job managers"
+                FontSize="13"
+                TextColor="Gray"
+                HorizontalOptions="Center" />
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#512BD4"
+                HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <CollectionView
+            Grid.Row="1"
+            ItemsSource="{Binding ChatRooms}">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                    <Label Text="💬" FontSize="52" HorizontalOptions="Center" />
+                    <Label
+                        Text="No conversations yet"
+                        FontSize="16"
+                        TextColor="Gray"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="Find a job and start chatting with the manager!"
+                        FontSize="13"
+                        TextColor="Gray"
+                        HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:UserChatRoom">
+                    <Border
+                        Margin="0,6"
+                        Padding="16,14"
+                        Stroke="#E0E0E0"
+                        StrokeShape="RoundRectangle 12"
+                        BackgroundColor="White">
+                        <Border.Shadow>
+                            <Shadow Brush="Gray" Offset="0,2" Radius="4" Opacity="0.1" />
+                        </Border.Shadow>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="4">
+                                <Label
+                                    Text="{Binding WorkPlaceName}"
+                                    FontSize="17"
+                                    FontAttributes="Bold"
+                                    TextColor="#1A1A2E" />
+                                <Label
+                                    Text="{Binding ManagerName, StringFormat='Manager: {0}'}"
+                                    FontSize="13"
+                                    TextColor="Gray" />
+                            </VerticalStackLayout>
+                            <Button
+                                Grid.Column="1"
+                                Text="Open"
+                                BackgroundColor="#512BD4"
+                                TextColor="White"
+                                CornerRadius="8"
+                                FontSize="14"
+                                Padding="14,8"
+                                Clicked="OnOpenChatClicked" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.ReportedJobsView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:FirebaseWorkout.ViewModels"
+    xmlns:model="clr-namespace:FirebaseWorkout.Model"
+    x:DataType="vm:ReportedJobsViewModel"
+    Title="Reported Jobs"
+    BackgroundColor="White">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Border
+            Grid.Row="0"
+            BackgroundColor="#B71C1C"
+            Padding="16,14">
+            <Label
+                Text="⚑ Reported Jobs"
+                FontSize="20"
+                FontAttributes="Bold"
+                TextColor="White"
+                HorizontalOptions="Center" />
+        </Border>
+
+        <!-- Content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16" Spacing="12">
+
+                <ActivityIndicator
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}"
+                    Color="#B71C1C"
+                    HorizontalOptions="Center"
+                    Margin="0,20" />
+
+                <Label
+                    Text="No reported jobs. All clear!"
+                    FontSize="16"
+                    TextColor="Gray"
+                    HorizontalOptions="Center"
+                    Margin="0,40"
+                    IsVisible="{Binding HasNoReportedJobs}" />
+
+                <CollectionView ItemsSource="{Binding ReportedJobs}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:ReportedJobSummary">
+                            <Border
+                                Margin="0,4"
+                                Padding="16,14"
+                                Stroke="#FFCDD2"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1"
+                                BackgroundColor="#FFF8F8">
+                                <Border.Shadow>
+                                    <Shadow Brush="Gray" Offset="0,2" Radius="4" Opacity="0.10" />
+                                </Border.Shadow>
+
+                                <VerticalStackLayout Spacing="8">
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label
+                                            Grid.Column="0"
+                                            Text="{Binding WorkPlaceName}"
+                                            FontSize="17"
+                                            FontAttributes="Bold"
+                                            TextColor="#1A1A2E" />
+                                        <Border
+                                            Grid.Column="1"
+                                            BackgroundColor="#B71C1C"
+                                            Padding="10,4"
+                                            StrokeShape="RoundRectangle 12">
+                                            <Label
+                                                Text="{Binding ReportCountText}"
+                                                FontSize="13"
+                                                TextColor="White"
+                                                FontAttributes="Bold" />
+                                        </Border>
+                                    </Grid>
+
+                                    <Label
+                                        Text="{Binding CreatedByUserName, StringFormat='Posted by: {0}'}"
+                                        FontSize="13"
+                                        TextColor="Gray" />
+
+                                    <BoxView HeightRequest="1" Color="#FFCDD2" Margin="0,4" />
+
+                                    <!-- Report list -->
+                                    <CollectionView ItemsSource="{Binding Reports}">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate x:DataType="model:WorkPlaceReport">
+                                                <Border
+                                                    Margin="0,3"
+                                                    Padding="10,8"
+                                                    Stroke="#FFCDD2"
+                                                    StrokeShape="RoundRectangle 8"
+                                                    BackgroundColor="#FFF3F3">
+                                                    <VerticalStackLayout Spacing="3">
+                                                        <Grid ColumnDefinitions="*,Auto">
+                                                            <Label
+                                                                Grid.Column="0"
+                                                                Text="{Binding ReporterName, StringFormat='👤 {0}'}"
+                                                                FontSize="13"
+                                                                FontAttributes="Bold"
+                                                                TextColor="#555" />
+                                                            <Label
+                                                                Grid.Column="1"
+                                                                Text="{Binding ReportDate}"
+                                                                FontSize="11"
+                                                                TextColor="Gray" />
+                                                        </Grid>
+                                                        <Label
+                                                            Text="{Binding Reason}"
+                                                            FontSize="13"
+                                                            TextColor="#B71C1C"
+                                                            FontAttributes="Italic" />
+                                                    </VerticalStackLayout>
+                                                </Border>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,6,0,0">
+                                        <Button
+                                            Grid.Column="0"
+                                            Text="✓ Dismiss"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#388E3C"
+                                            TextColor="White"
+                                            CornerRadius="8"
+                                            FontSize="14"
+                                            HeightRequest="42"
+                                            Clicked="OnDismissClicked" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Text="🗑 Delete Job"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#B71C1C"
+                                            TextColor="White"
+                                            CornerRadius="8"
+                                            FontSize="14"
+                                            HeightRequest="42"
+                                            Clicked="OnDeleteJobClicked" />
+                                    </Grid>
+
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Back button -->
+        <Button
+            Grid.Row="2"
+            Text="← Back"
+            Command="{Binding GoBackCommand}"
+            BackgroundColor="#EEE"
+            TextColor="#512BD4"
+            CornerRadius="10"
+            FontSize="16"
+            HeightRequest="50"
+            Margin="16,8" />
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.SignInView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:FirebaseWorkout.ViewModels"
+    x:DataType="views:SignInViewModel"
+    NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0.0" Color="#1A0040" />
+            <GradientStop Offset="0.5" Color="#3A0078" />
+            <GradientStop Offset="1.0" Color="#061161" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout
+                Padding="32,48,32,32"
+                Spacing="18"
+                VerticalOptions="Center">
+
+                <!-- Logo + Tagline -->
+                <VerticalStackLayout Spacing="10" Margin="0,0,0,14">
+                    <Image
+                        Source="hireme_logo.png"
+                        HeightRequest="110"
+                        WidthRequest="110"
+                        HorizontalOptions="Center" />
+                    <Label
+                        Text="HireMe"
+                        FontSize="36"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        TextColor="White" />
+                    <Label
+                        Text="Your next job is closer than you think"
+                        FontSize="14"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        TextColor="#CCB8FF" />
+                </VerticalStackLayout>
+
+                <!-- Error Message -->
+                <Border
+                    IsVisible="{Binding SignInMessageVisible}"
+                    BackgroundColor="#FF000033"
+                    Stroke="#FF6B6B"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12,8">
+                    <Label
+                        Text="{Binding ErrorMessage}"
+                        FontSize="14"
+                        HorizontalTextAlignment="Center"
+                        TextColor="#FF9999" />
+                </Border>
+
+                <!-- Email -->
+                <Border
+                    Padding="14,12"
+                    Stroke="#5B3FBF"
+                    StrokeShape="RoundRectangle 12"
+                    BackgroundColor="#2D1A7A">
+                    <Entry
+                        BackgroundColor="Transparent"
+                        FontSize="16"
+                        Keyboard="Email"
+                        Placeholder="Email address"
+                        PlaceholderColor="#9985CC"
+                        ReturnType="Next"
+                        Text="{Binding UserEmail}"
+                        TextColor="White" />
+                </Border>
+
+                <!-- Password -->
+                <Border
+                    Stroke="#5B3FBF"
+                    StrokeShape="RoundRectangle 12"
+                    BackgroundColor="#2D1A7A">
+                    <Grid Padding="14,12" ColumnDefinitions="*,Auto">
+                        <Entry
+                            Grid.Column="0"
+                            BackgroundColor="Transparent"
+                            FontSize="16"
+                            IsPassword="{Binding EntryAsPassword}"
+                            Placeholder="Password"
+                            PlaceholderColor="#9985CC"
+                            Text="{Binding UserPassword}"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+                        <Button
+                            Grid.Column="1"
+                            Margin="6,0,0,0"
+                            Padding="0"
+                            BackgroundColor="Transparent"
+                            Command="{Binding TogglePasswordCommand}"
+                            FontFamily="MaterialIcons"
+                            FontSize="22"
+                            Text="{Binding PasswordIconCode}"
+                            TextColor="#CCB8FF"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <!-- Sign In Button -->
+                <Button
+                    Command="{Binding SignInCommand}"
+                    CornerRadius="14"
+                    FontSize="17"
+                    FontAttributes="Bold"
+                    HeightRequest="54"
+                    Text="Sign In"
+                    BackgroundColor="#7C3AED"
+                    TextColor="White"
+                    Margin="0,6,0,0">
+                    <Button.Shadow>
+                        <Shadow Brush="#7C3AED" Offset="0,4" Radius="12" Opacity="0.5" />
+                    </Button.Shadow>
+                </Button>
+
+                <!-- Sign Up link -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                    <Label
+                        Text="Don't have an account?"
+                        FontSize="14"
+                        TextColor="#CCB8FF"
+                        VerticalTextAlignment="Center" />
+                    <Button
+                        BackgroundColor="Transparent"
+                        Command="{Binding NavigateToSignUpCommand}"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        Text="Sign Up"
+                        TextColor="White"
+                        Padding="4,0" />
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Loading -->
+        <Grid
+            HorizontalOptions="Fill"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Fill">
+            <BoxView BackgroundColor="#000000AA" HorizontalOptions="Fill" VerticalOptions="Fill" />
+            <ActivityIndicator IsRunning="True" Color="White" WidthRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+</ContentPage>

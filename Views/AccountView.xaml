@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!--
+    ╔══════════════════════════════════════════════════════════╗
+    ║               מסך פרופיל משתמש - AccountView            ║
+    ║  מאפשר למשתמש לצפות ולעדכן את הפרטים האישיים שלו       ║
+    ╚══════════════════════════════════════════════════════════╝
+-->
+
+<ContentPage
+    x:Class="FirebaseWorkout.Views.AccountView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:FirebaseWorkout.Model"
+    xmlns:views="clr-namespace:FirebaseWorkout.ViewModels"
+    Title="AccountView"
+    x:DataType="views:AccountViewModel">
+    <!-- x:DataType = מגדיר שה-ViewModel של המסך הוא AccountViewModel -->
+
+    <!-- ═══════════════════════════════════════ -->
+    <!--         רקע גרדיאנט לכל המסך           -->
+    <!-- ═══════════════════════════════════════ -->
+    <ContentPage.Background>
+        <!-- צבע שמתחיל בוורוד (#C6426E) ומסתיים בסגול (#642B73) באלכסון -->
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Offset="0.0" Color="#C6426E" />
+            <GradientStop Offset="1.0" Color="#642B73" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <Grid>
+
+        <!-- רשת ראשית: 3 עמודות, 4 שורות -->
+        <!-- עמודות: שוליים קטנים | תוכן מרכזי | שוליים קטנים -->
+        <!-- שורות:  כפתור מחיקה | תמונת פרופיל | שדות קלט | ריווח תחתון -->
+        <Grid ColumnDefinitions="0.1*,8*,0.1*" RowDefinitions=".8*,2.6*,5.5*,*">
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!--   כפתור מחיקת משתמש (מוצג רק לאדמין)          -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <HorizontalStackLayout
+                IsVisible="{Binding IsDeleteButtonVisible}"
+                Grid.ColumnSpan="3"
+                Margin="0,10,20,0"
+                HorizontalOptions="End"
+                VerticalOptions="Center">
+                <!-- IsVisible מחובר ל-ViewModel — מוצג רק כאשר IsDeleteButtonVisible=true -->
+
+                <Button
+                    Background="Transparent"
+                    HeightRequest="60"
+                    Command="{Binding DeleteCommand}"
+                    FontFamily="MaterialIcons"
+                    FontSize="40"
+                    Text="{Binding DeleteIcon}"
+                    TextColor="Wheat" />
+                <!-- Command=DeleteCommand → לחיצה מפעילה את פונקציית המחיקה ב-ViewModel -->
+
+            </HorizontalStackLayout>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!--            תמונת הפרופיל העגולה               -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <StackLayout
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="0,10,0,0"
+                VerticalOptions="Start">
+
+                <!-- מסגרת עגולה לתמונה (CornerRadius=60 יוצר עיגול מושלם) -->
+                <Border
+                    HeightRequest="120"
+                    HorizontalOptions="Center"
+                    Stroke="#ccc"
+                    StrokeThickness="2"
+                    VerticalOptions="Center"
+                    WidthRequest="120">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="60" />
+                    </Border.StrokeShape>
+
+                    <Grid>
+
+                        <!-- שכבה 1: אין תמונה — אייקון איש קשר על רקע סגול -->
+                        <!-- IsVisible=false כשיש תמונה, IsVisible=true כשאין -->
+                        <Border
+                            IsVisible="{Binding HasProfileImage, Converter={StaticResource InvertedBoolConverter}}"
+                            BackgroundColor="#7B52AB">
+                            <VerticalStackLayout
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Spacing="2">
+                                <!-- אייקון איש (MaterialIcons: account_circle) -->
+                                <Label
+                                    Text="&#xe7fd;"
+                                    FontFamily="MaterialIcons"
+                                    FontSize="62"
+                                    TextColor="White"
+                                    HorizontalOptions="Center" />
+                                <Label
+                                    Text="הוסף תמונה"
+                                    FontSize="9"
+                                    TextColor="#DDD"
+                                    HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- שכבה 2: יש תמונה — מציג אותה -->
+                        <ImageButton
+                            IsVisible="{Binding HasProfileImage}"
+                            Aspect="AspectFill"
+                            Command="{Binding GetUserImageCommand}"
+                            Source="{Binding UserImageSource}"
+                            HeightRequest="120" />
+
+                        <!-- שכבה 3: כפתור שקוף לפתיחת גלריה כשאין תמונה (מכסה את האייקון) -->
+                        <Button
+                            IsVisible="{Binding HasProfileImage, Converter={StaticResource InvertedBoolConverter}}"
+                            Command="{Binding GetUserImageCommand}"
+                            BackgroundColor="Transparent"
+                            HeightRequest="120" />
+
+                    </Grid>
+                </Border>
+            </StackLayout>
+
+            <!-- ═══════════════════════════════════════════════ -->
+            <!--              שדות הפרטים האישיים               -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <VerticalStackLayout
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="20,0,20,0">
+
+                <!-- שדה שם פרטי — ניתן לעריכה, מחובר ל-FirstName ב-ViewModel -->
+                <Border
+                    Margin="0,0,0,10"
+                    Padding="10"
+                    HeightRequest="60"
+                    Stroke="#ccc"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="1">
+                    <Entry
+                        FontSize="15"
+                        Placeholder="First Name"
+                        Text="{Binding FirstName}"
+                        TextColor="Wheat" />
+                </Border>
+
+                <!-- שדה שם משפחה — ניתן לעריכה, מחובר ל-LastName ב-ViewModel -->
+                <Border
+                    Margin="0,0,0,10"
+                    Padding="10"
+                    HeightRequest="60"
+                    Stroke="#ccc"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="1">
+                    <Entry
+                        FontSize="15"
+                        Placeholder="Last Name"
+                        Text="{Binding LastName}"
+                        TextColor="Wheat" />
+                </Border>
+
+                <!-- שדה אימייל — נעול לעריכה (IsEnabled=False) כי לא ניתן לשנות אימייל -->
+                <!-- מוצג באפור כדי להראות שהוא לא פעיל -->
+                <Border
+                    Margin="0,0,0,10"
+                    Padding="10"
+                    HeightRequest="60"
+                    Stroke="#ccc"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="1">
+                    <Entry
+                        FontSize="15"
+                        Keyboard="Email"
+                        Placeholder="Email"
+                        IsEnabled="False"
+                        Text="{Binding UserEmail}"
+                        TextColor="Gray" />
+                </Border>
+
+                <!-- שדה מספר נייד — מקלדת טלפון, מחובר ל-UserMobile ב-ViewModel -->
+                <Border
+                    Margin="0,0,0,10"
+                    Padding="10"
+                    HeightRequest="60"
+                    Stroke="#ccc"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="1">
+                    <Entry
+                        FontSize="15"
+                        Keyboard="Telephone"
+                        Placeholder="Mobile"
+                        Text="{Binding UserMobile}"
+                        TextColor="Wheat" />
+                </Border>
+
+                <VerticalStackLayout Grid.Row="4" />
+
+                <!-- הודעת שגיאה — מוצגת רק כאשר ErrorMessageIsVisible=true (למשל שגיאת ולידציה) -->
+                <Label
+                    Margin="30,0,0,10"
+                    IsVisible="{Binding ErrorMessageIsVisible}"
+                    Text="{Binding ErrorMessage}"
+                    TextColor="#ff4dd2" />
+
+                <!-- כפתור שמירת השינויים → מפעיל UpdateCommand ב-ViewModel -->
+                <!-- שולח את הנתונים המעודכנים לFirebase -->
+                <Button
+                    Margin="0,10,0,0"
+                    Command="{Binding UpdateCommand}"
+                    CornerRadius="8"
+                    FontSize="18"
+                    HeightRequest="50"
+                    Text="Update" />
+
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!--   מסך טעינה — מוצג מעל הכל כשהאפליקציה עסוקה     -->
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!-- IsBusy=true → מכסה את כל המסך ומונע לחיצות בזמן טעינה -->
+        <Grid
+            HorizontalOptions="Fill"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Fill">
+
+            <!-- שכבה כחולה שקופה שמחשיכה את הרקע -->
+            <BoxView
+                BackgroundColor="LightBlue"
+                HorizontalOptions="Fill"
+                Opacity="0.7"
+                VerticalOptions="Fill" />
+
+            <!-- ספינר הטעינה המסתובב במרכז המסך -->
+            <ActivityIndicator
+                IsRunning="True"
+                WidthRequest="100"
+                Color="Beige" />
+        </Grid>
+    </Grid>
+
+</ContentPage>

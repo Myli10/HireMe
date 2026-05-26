@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="FirebaseWorkout.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:FirebaseWorkout.Views"
+    Title="FirebaseWorkout">
+
+    <Shell.TitleView>
+        <HorizontalStackLayout>
+
+            <!--  HOME Option  -->
+            <Button
+                Margin="5"
+                BackgroundColor="Wheat"
+                Command="{Binding NavigateToHomePageCommand}"
+                FontFamily="MaterialIcons"
+                FontSize="24"
+                HorizontalOptions="Start"
+                Text="{Binding HomeIcon}"
+                TextColor="Black" />
+
+            <!--  Account Option  -->
+            <Button
+                Margin="0,5,5,5"
+                BackgroundColor="Wheat"
+                Command="{Binding NavigateToAccountPageCommand}"
+                FontFamily="MaterialIcons"
+                FontSize="24"
+                HorizontalOptions="Start"
+                Text="{Binding AccountIcon}"
+                TextColor="Black" />
+
+
+            <!--  IsAdmin Option  -->
+            <Button
+                Margin="0,5,5,5"
+                BackgroundColor="Wheat"
+                Command="{Binding NavigateToAdminPageCommand}"
+                FontFamily="MaterialIcons"
+                FontSize="24"
+                HorizontalOptions="Start"
+                IsVisible="{Binding IsAdmin}"
+                Text="{Binding AdminIcon}"
+                TextColor="Black" />
+
+            <!--  SignOut Option  -->
+            <Button
+                Margin="0,5,5,5"
+                BackgroundColor="Wheat"
+                Command="{Binding LogoutCommand}"
+                FontFamily="MaterialIcons"
+                FontSize="24"
+                HorizontalOptions="Start"
+                Text="{Binding LogoutIcon}"
+                TextColor="Black" />
+
+
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:MainPageView}"
+        Route="MainPage" />
+</Shell>

@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.FindJobView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:FirebaseWorkout.ViewModels"
+    xmlns:model="clr-namespace:FirebaseWorkout.Model"
+    x:DataType="vm:FindJobViewModel"
+    Title="Find Your Job"
+    BackgroundColor="#ECEAF6">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="22,48,22,20">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Offset="0.0" Color="#2A1A8A" />
+                    <GradientStop Offset="1.0" Color="#512BD4" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.22" />
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="3">
+                    <Label
+                        Text="Find Your Job"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        TextColor="White" />
+                    <Label
+                        Text="Your next job is closer than you think"
+                        FontSize="12"
+                        TextColor="#C4AEFF" />
+                </VerticalStackLayout>
+                <ActivityIndicator
+                    Grid.Column="1"
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}"
+                    Color="White"
+                    VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!-- Filter Panel (collapsible) -->
+        <Border
+            Grid.Row="1"
+            IsVisible="{Binding ShowFilter}"
+            BackgroundColor="White"
+            Stroke="#DDD8F5"
+            StrokeThickness="1"
+            Padding="16,14,16,16">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,3" Radius="6" Opacity="0.06" />
+            </Border.Shadow>
+            <VerticalStackLayout Spacing="12">
+
+                <Label
+                    Text="חיפוש מתקדם"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    TextColor="#2A1A8A" />
+
+                <!-- Salary Range -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="טווח שכר (₪/שעה)" FontSize="12" TextColor="#666" />
+                    <Grid ColumnDefinitions="*,24,*" ColumnSpacing="0">
+                        <Border
+                            Grid.Column="0"
+                            Padding="10,8"
+                            Stroke="#DDD8F5"
+                            StrokeShape="RoundRectangle 8"
+                            BackgroundColor="#F5F3FF">
+                            <Entry
+                                Text="{Binding MinSalaryText}"
+                                Placeholder="מינימום"
+                                Keyboard="Numeric"
+                                FontSize="14"
+                                TextColor="#1A1233"
+                                PlaceholderColor="#BBB" />
+                        </Border>
+                        <Label
+                            Grid.Column="1"
+                            Text="–"
+                            FontSize="16"
+                            TextColor="#888"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center" />
+                        <Border
+                            Grid.Column="2"
+                            Padding="10,8"
+                            Stroke="#DDD8F5"
+                            StrokeShape="RoundRectangle 8"
+                            BackgroundColor="#F5F3FF">
+                            <Entry
+                                Text="{Binding MaxSalaryText}"
+                                Placeholder="מקסימום"
+                                Keyboard="Numeric"
+                                FontSize="14"
+                                TextColor="#1A1233"
+                                PlaceholderColor="#BBB" />
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!-- Category -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="קטגוריה" FontSize="12" TextColor="#666" />
+                    <Border
+                        Padding="4,2"
+                        Stroke="#DDD8F5"
+                        StrokeShape="RoundRectangle 8"
+                        BackgroundColor="#F5F3FF">
+                        <Picker
+                            Title="כל הקטגוריות"
+                            ItemsSource="{Binding AvailableCategories}"
+                            SelectedItem="{Binding SelectedCategory}"
+                            TextColor="#1A1233"
+                            TitleColor="#AAA"
+                            FontSize="14" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- City -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="עיר / מיקום" FontSize="12" TextColor="#666" />
+                    <Border
+                        Padding="10,8"
+                        Stroke="#DDD8F5"
+                        StrokeShape="RoundRectangle 8"
+                        BackgroundColor="#F5F3FF">
+                        <Entry
+                            Text="{Binding CityFilter}"
+                            Placeholder="לדוגמה: תל אביב, חיפה..."
+                            FontSize="14"
+                            TextColor="#1A1233"
+                            PlaceholderColor="#BBB" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Buttons -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button
+                        Grid.Column="0"
+                        Text="החל פילטר"
+                        Command="{Binding ApplyFilterCommand}"
+                        BackgroundColor="#4527A0"
+                        TextColor="White"
+                        CornerRadius="10"
+                        FontSize="14"
+                        HeightRequest="42" />
+                    <Button
+                        Grid.Column="1"
+                        Text="נקה הכל"
+                        Command="{Binding ClearFilterCommand}"
+                        BackgroundColor="#EDE9FE"
+                        TextColor="#4527A0"
+                        CornerRadius="10"
+                        FontSize="14"
+                        HeightRequest="42" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Jobs List -->
+        <CollectionView
+            Grid.Row="2"
+            ItemsSource="{Binding WorkPlaces}"
+            Margin="14,8,14,0">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10" Margin="0,60,0,0">
+                    <Label Text="🔍" FontSize="48" HorizontalOptions="Center" />
+                    <Label Text="No jobs found" FontSize="17" TextColor="#666" HorizontalOptions="Center" FontAttributes="Bold" />
+                    <Label Text="Try adjusting the filter or refresh" FontSize="13" TextColor="#AAA" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:WorkPlace">
+                    <Border
+                        Margin="0,5"
+                        Padding="16,14"
+                        Stroke="#E0DBF7"
+                        StrokeShape="RoundRectangle 14"
+                        StrokeThickness="1"
+                        BackgroundColor="White">
+                        <Border.Shadow>
+                            <Shadow Brush="#2A1A8A" Offset="0,2" Radius="8" Opacity="0.07" />
+                        </Border.Shadow>
+
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="7">
+
+                            <!-- Job name + filled badge + poster -->
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="2">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label
+                                        Text="{Binding Name}"
+                                        FontSize="16"
+                                        FontAttributes="Bold"
+                                        TextColor="#1A1233"
+                                        VerticalOptions="Center" />
+                                    <Border
+                                        IsVisible="{Binding IsFilled}"
+                                        BackgroundColor="#FEE2E2"
+                                        Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 6"
+                                        Padding="7,2">
+                                        <Label
+                                            Text="מאויש"
+                                            FontSize="11"
+                                            TextColor="#991B1B"
+                                            FontAttributes="Bold" />
+                                    </Border>
+                                </HorizontalStackLayout>
+                                <Label
+                                    Text="{Binding CreatedByUserName, StringFormat='פורסם על ידי: {0}'}"
+                                    FontSize="11"
+                                    TextColor="#9CA3AF" />
+                            </VerticalStackLayout>
+
+                            <!-- Details button -->
+                            <Button
+                                Grid.Row="0" Grid.Column="1"
+                                Grid.RowSpan="3"
+                                Text="פרטים ›"
+                                FontSize="13"
+                                BackgroundColor="#4527A0"
+                                TextColor="White"
+                                CornerRadius="10"
+                                Padding="14,8"
+                                VerticalOptions="Center"
+                                Clicked="OnMoreButtonClicked" />
+
+                            <!-- Category + Rating -->
+                            <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="8">
+                                <Border
+                                    BackgroundColor="#EDE9FE"
+                                    Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 6"
+                                    Padding="8,3">
+                                    <Label
+                                        Text="{Binding Category}"
+                                        FontSize="12"
+                                        TextColor="#4C1D95" />
+                                </Border>
+                                <Border
+                                    BackgroundColor="#EEF2FF"
+                                    Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 6"
+                                    Padding="8,3">
+                                    <HorizontalStackLayout Spacing="5">
+                                        <Label
+                                            Text="{Binding WorkerRating, StringFormat='{0:F1}'}"
+                                            FontSize="12"
+                                            FontAttributes="Bold"
+                                            TextColor="#3730A3"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            Text="|"
+                                            FontSize="11"
+                                            TextColor="#C7D2FE"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            Text="{Binding ReviewCount, StringFormat='{0} ביקורות'}"
+                                            FontSize="11"
+                                            TextColor="#6366F1"
+                                            VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Border>
+                            </HorizontalStackLayout>
+
+                            <!-- Salary + Address -->
+                            <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="12">
+                                <Label
+                                    Text="{Binding SalaryPerHour, StringFormat='₪ {0}/שעה'}"
+                                    FontSize="13"
+                                    TextColor="#065F46"
+                                    FontAttributes="Bold" />
+                                <Label
+                                    Text="{Binding Address}"
+                                    FontSize="12"
+                                    TextColor="#888"
+                                    LineBreakMode="TailTruncation"
+                                    MaxLines="1" />
+                            </HorizontalStackLayout>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Bottom Bar -->
+        <Border
+            Grid.Row="3"
+            BackgroundColor="White"
+            Stroke="#DDD8F5"
+            StrokeThickness="1"
+            Padding="16,12,16,30">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,-2" Radius="10" Opacity="0.07" />
+            </Border.Shadow>
+            <VerticalStackLayout Spacing="9">
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button
+                        Grid.Column="0"
+                        Text="🗺  מפה"
+                        Command="{Binding GoToMapCommand}"
+                        BackgroundColor="#4527A0"
+                        TextColor="White"
+                        CornerRadius="12"
+                        FontSize="15"
+                        HeightRequest="46" />
+                    <Button
+                        Grid.Column="1"
+                        Text="💬  הצ'אטים שלי"
+                        Command="{Binding GoToMyChatsCommand}"
+                        BackgroundColor="#EDE9FE"
+                        TextColor="#3730A3"
+                        CornerRadius="12"
+                        FontSize="14"
+                        HeightRequest="46" />
+                </Grid>
+
+                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="9">
+                    <Button
+                        Grid.Column="0"
+                        Text="+ פרסם עבודה"
+                        Command="{Binding GoToAddJobCommand}"
+                        BackgroundColor="#1E0E6B"
+                        TextColor="White"
+                        CornerRadius="12"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        HeightRequest="46" />
+                    <Button
+                        Grid.Column="1"
+                        Text="Filter"
+                        Command="{Binding ToggleFilterCommand}"
+                        BackgroundColor="#EDE9FE"
+                        TextColor="#4527A0"
+                        CornerRadius="12"
+                        FontSize="13"
+                        WidthRequest="60"
+                        HeightRequest="46" />
+                    <Button
+                        Grid.Column="2"
+                        Text="↺"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="#F0EEF9"
+                        TextColor="#4527A0"
+                        CornerRadius="12"
+                        FontSize="20"
+                        WidthRequest="48"
+                        HeightRequest="46" />
+                </Grid>
+
+                <Button
+                    Text="יציאה"
+                    Command="{Binding LogOutCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="#9CA3AF"
+                    CornerRadius="12"
+                    FontSize="14"
+                    HeightRequest="36" />
+
+            </VerticalStackLayout>
+        </Border>
+
+    </Grid>
+</ContentPage>

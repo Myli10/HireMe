@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FirebaseWorkout.Views.EditJobView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:FirebaseWorkout.ViewModels"
+    x:DataType="vm:EditJobViewModel"
+    Title="Edit Job"
+    BackgroundColor="White">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+
+            <Label
+                Text="עריכת פרטי משרה"
+                FontSize="26"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                TextColor="#512BD4"
+                Margin="0,10,0,6" />
+
+            <Label
+                Text="רק אתה (המפרסם) יכול לעדכן פרטים אלה"
+                FontSize="13"
+                TextColor="Gray"
+                HorizontalOptions="Center"
+                Margin="0,0,0,10" />
+
+            <!-- Category -->
+            <Label Text="קטגוריה" FontAttributes="Bold" TextColor="#512BD4" FontSize="14" />
+            <Border Padding="4,0" Stroke="#E0E0E0" StrokeShape="RoundRectangle 8">
+                <Picker
+                    Title="בחר קטגוריה"
+                    ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding Category}"
+                    FontSize="15" />
+            </Border>
+
+            <!-- Custom category -->
+            <Border
+                IsVisible="{Binding ShowCustomCategory}"
+                Padding="12,10"
+                Stroke="#512BD4"
+                StrokeShape="RoundRectangle 8">
+                <Entry
+                    Placeholder="פרט את סוג המשרה..."
+                    Text="{Binding CustomCategory}"
+                    FontSize="15" />
+            </Border>
+
+            <!-- Description -->
+            <Label Text="תיאור המשרה" FontAttributes="Bold" TextColor="#512BD4" FontSize="14" />
+            <Border Padding="12,10" Stroke="#E0E0E0" StrokeShape="RoundRectangle 8">
+                <Editor
+                    Placeholder="תאר את העבודה, האווירה, טיפים..."
+                    Text="{Binding Description}"
+                    FontSize="15"
+                    HeightRequest="100"
+                    AutoSize="TextChanges" />
+            </Border>
+
+            <!-- Manager Phone -->
+            <Label Text="טלפון מנהל/ת" FontAttributes="Bold" TextColor="#512BD4" FontSize="14" />
+            <Border Padding="12,10" Stroke="#E0E0E0" StrokeShape="RoundRectangle 8">
+                <Entry Placeholder="05X-XXXXXXX" Text="{Binding ManagerPhone}" Keyboard="Telephone" FontSize="15" />
+            </Border>
+
+            <!-- Salary Per Hour -->
+            <Label Text="שכר לשעה (₪)" FontAttributes="Bold" TextColor="#512BD4" FontSize="14" />
+            <Border Padding="12,10" Stroke="#E0E0E0" StrokeShape="RoundRectangle 8">
+                <Entry Placeholder="למשל: 40" Text="{Binding SalaryText}" Keyboard="Numeric" FontSize="15" />
+            </Border>
+
+            <!-- Shift Hours -->
+            <Label Text="שעות משמרת" FontAttributes="Bold" TextColor="#512BD4" FontSize="14" />
+            <Border Padding="12,10" Stroke="#E0E0E0" StrokeShape="RoundRectangle 8">
+                <Entry Placeholder="למשל: 09:00 - 17:00" Text="{Binding ShiftHours}" FontSize="15" />
+            </Border>
+
+            <!-- Opening Hours -->
+            <Label Text="שעות פתיחה" FontAttributes="Bold" TextColor="#512BD4" FontSize="14" />
+            <Border Padding="12,10" Stroke="#E0E0E0" StrokeShape="RoundRectangle 8">
+                <Entry Placeholder="למשל: 07:30 - 22:00" Text="{Binding OpeningHours}" FontSize="15" />
+            </Border>
+
+            <!-- Loading -->
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#512BD4"
+                HorizontalOptions="Center" />
+
+            <!-- Buttons -->
+            <Button
+                Text="שמור שינויים"
+                Command="{Binding SaveChangesCommand}"
+                BackgroundColor="#512BD4"
+                TextColor="White"
+                CornerRadius="10"
+                FontSize="17"
+                FontAttributes="Bold"
+                HeightRequest="52"
+                Margin="0,10,0,0" />
+
+            <Button
+                Text="ביטול"
+                Command="{Binding CancelCommand}"
+                BackgroundColor="#F0F0F0"
+                TextColor="#555"
+                CornerRadius="10"
+                FontSize="16"
+                HeightRequest="48"
+                Margin="0,0,0,20" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
