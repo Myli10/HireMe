@@ -7,14 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace FirebaseWorkout.ViewModels
 {
-    // ===================================================
-    // JobDetailsViewModel — לוגיקת מסך פרטי משרה
-    // ===================================================
-    // [QueryProperty] = מקבל את אובייקט המשרה מהמסך הקודם (FindJobView).
-    // מסך זה מציג פרטים מלאים של משרה ופעולות:
-    //   למועמד:    הוספה למועדפים, כתיבת ביקורת, צ'אט עם מנהל, דיווח
-    //   לבעל משרה: סימון מאויש, ניהול צ'אטים, עריכה, מחיקה
-    // ===================================================
+
     [QueryProperty(nameof(SelectedWorkPlace), "selectedWorkPlace")]
     public partial class JobDetailsViewModel : ObservableObject
     {

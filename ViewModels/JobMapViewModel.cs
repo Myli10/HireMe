@@ -9,22 +9,7 @@ using System.Text.Json;
 
 namespace FirebaseWorkout.ViewModels
 {
-    // ===================================================
-    // JobMapViewModel — לוגיקת מסך המפה
-    // ===================================================
-    // מציג מפה אינטראקטיבית עם כל המשרות כנעצים.
-    // טכנולוגיה: WebView + Leaflet.js + OpenStreetMap (ללא עלות).
-    //
-    // זרימת העבודה:
-    //   1. מקבל מיקום GPS של המשתמש
-    //   2. טוען את כל המשרות מ-Firebase
-    //   3. ממיר כתובות חסרות קואורדינטות דרך OpenStreetMap API
-    //   4. בונה HTML מלא עם JavaScript ומחדיר אותו ל-WebView
-    //
-    // תקשורת WebView ← MAUI:
-    //   לחיצה על "View Details" → URL: "hireme://workplace/{id}"
-    //   הקוד ב-JobMapView.xaml.cs מיירט את ה-URL ומנווט ל-JobDetailsView
-    // ===================================================
+
     public partial class JobMapViewModel : ObservableObject
     {
         private readonly IWorkPlaceRepository _workPlaceRepository;
@@ -154,22 +139,22 @@ namespace FirebaseWorkout.ViewModels
         {
             var sb = new StringBuilder();
 
-            // ראש ה-HTML: קישורי CSS ו-JS של Leaflet מ-CDN
             sb.AppendLine("<!DOCTYPE html><html><head>");
             sb.AppendLine("<meta charset='utf-8'/>");
             sb.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1.0'/>");
-            sb.AppendLine("<link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'/>");
-            sb.AppendLine("<script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>");
+            sb.AppendLine("<link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'/>"); // מוריד את הספרייה-עיצוב
+            sb.AppendLine("<script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>");// מוריד את הספרייה-לוגיקה
             sb.AppendLine("<style>html,body,#map{height:100%;margin:0;padding:0;}</style>");
             sb.AppendLine("</head><body>");
             sb.AppendLine("<div id='map'></div>");
             sb.AppendLine("<script>");
 
-            // אתחול המפה — ממורכזת על מיקום המשתמש, zoom 13
-            sb.AppendLine($"var map = L.map('map').setView([{_userLat},{_userLng}], 13);");
-            sb.AppendLine("L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);");
+            sb.AppendLine($"var map = L.map('map').setView([{_userLat},{_userLng}], 13);"); // פה המפה נוצרת. המספר 13 זה רמת הזום, ככל שהמספר גדול יותר ככה המפה מוגדלת יותר
+            sb.AppendLine("L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);"); // המפה בנויה מאלפי תמונות קטנות שנקראות אריחים.
 
-            // סמן כחול = מיקום המשתמש (circleMarker = עיגול, לא נעץ)
+
+
+            // סמן כחול = מיקום המשתמש 
             sb.AppendLine($"L.circleMarker([{_userLat},{_userLng}],{{radius:12,color:'#1565C0',fillColor:'#42A5F5',fillOpacity:0.9,weight:3}})" +
                           $".addTo(map).bindPopup('<b>📍 You are here</b>').openPopup();");
 
@@ -179,13 +164,12 @@ namespace FirebaseWorkout.ViewModels
             // הוספת נעץ אדום לכל משרה שיש לה קואורדינטות
             foreach (var wp in _workPlaces.Where(w => w.Latitude != 0 && w.Longitude != 0))
             {
-                // ניקוי תווים מיוחדים שעלולים לשבור את ה-JavaScript
                 var name = wp.Name?.Replace("'", "\\'").Replace("\"", "&quot;") ?? "";
                 var salary = wp.SalaryPerHour;
                 var id = wp.Id;
 
-                // כל לחיצה על "View Details" → ניווט לURL מיוחד שיירוט ע"י MAUI
-                // "hireme://workplace/{id}" → JobMapView.xaml.cs → GoToAsync("JobDetailsView")
+                // השורה שמה נעץ אדום על הקורדינאטות של המשרה
+                // bindPopup - מצרפת לנעץ חלון שנפתח בלחיצה ומכיל שם, שכר וכפתור פרטים
                 sb.AppendLine($"L.marker([{wp.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)},{wp.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}],{{icon:redIcon}})" +
                               $".addTo(map)" +
                               $".bindPopup('<b>{name}</b><br/>₪{salary}/hr<br/><a href=\"hireme://workplace/{id}\">View Details</a>');");

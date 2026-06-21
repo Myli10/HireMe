@@ -36,7 +36,7 @@ namespace FirebaseWorkout.ViewModels
         // כל שדה מפעיל ChangeCanExecute אחרי כל שינוי
         // כדי לבדוק בזמן אמת אם הכפתור צריך להיות פעיל.
 
-        private string _fName;
+        private string _fName;  
         private string _lName;
         private string _uEmail;
         private string _uPassword;
@@ -232,7 +232,7 @@ namespace FirebaseWorkout.ViewModels
         {
             var fnameOK = !string.IsNullOrEmpty(FName);                        // שם פרטי לא ריק
             var lnameOK = !string.IsNullOrEmpty(LName);                        // שם משפחה לא ריק
-            var emailOK = !string.IsNullOrEmpty(UEmail);                       // אימייל לא ריק
+            var emailOK = !string.IsNullOrEmpty(UEmail) && UEmail.EndsWith("@gmail.com");                       // אימייל לא ריק
             var passOK = string.IsNullOrEmpty(UPassword) ? false : UPassword.Length > 5;  // סיסמה > 5 תווים
             var mobileOK = string.IsNullOrEmpty(UMobile) ? false : UMobile.Length == 10; // טלפון = 10 ספרות בדיוק
 

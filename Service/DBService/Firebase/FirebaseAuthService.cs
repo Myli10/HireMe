@@ -28,7 +28,7 @@ namespace FirebaseWorkout.Service.DBService.Firebase
 					{
 						new EmailProvider()
 					},
-				UserRepository = new FileUserRepository("AppCurrentUser") // שמירת session מקומית
+				UserRepository = new FileUserRepository("AppCurrentUser") 
 			};
 			_authClient = new FirebaseAuthClient(config);
 			_logger = logger;
